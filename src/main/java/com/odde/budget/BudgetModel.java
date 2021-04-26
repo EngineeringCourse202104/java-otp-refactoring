@@ -42,8 +42,8 @@ public class BudgetModel {
 
     private int getBudgetByMonth(LocalDate startDate, LocalDate endDate) {
         for (Budget budget : getBudgets()) {
-            if (startDate.getYear() == budget.year && startDate.getMonthValue() == budget.month) {
-                return (Period.between(startDate, endDate).getDays() + 1) * (budget.amount / startDate.lengthOfMonth());
+            if (YearMonth.from(startDate).equals(budget.getYearMonth())) {
+                return (Period.between(startDate, endDate).getDays() + 1) * (budget.amount / budget.getYearMonth().lengthOfMonth());
             }
         }
 
