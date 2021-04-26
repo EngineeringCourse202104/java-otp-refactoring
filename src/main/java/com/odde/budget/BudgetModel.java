@@ -2,7 +2,10 @@ package com.odde.budget;
 
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 public class BudgetModel {
 
@@ -18,34 +21,28 @@ public class BudgetModel {
             return 0;
         }
 
-        int startYear = start.getYear();
+        int dMonth = (int) MONTHS.between(YearMonth.from(start), YearMonth.from(end)) + 1;
 
-        int startMonth = start.getMonthValue();
-
-        int endYear = end.getYear();
-        int endMonth = end.getMonthValue();
-
-        int dMonth = (endYear * 12 + endMonth) - (startYear * 12 + startMonth) + 1;
-
-        if (dMonth > 1) {
-
-            int sum1 = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
-
-            int sum2 = 0;
-
-            for (int i = 0; i < dMonth - 2; i++) {
-
-                LocalDate temp = start.plusMonths(i + 1);
-                sum2 += getBudgetByMonth(temp, 0, 0);
-            }
-
-            int sum3 = getBudgetByMonth(end, 1, end.getDayOfMonth());
-
-            return sum1 + sum2 + sum3;
-
-        } else {
+        if (dMonth <= 1) {
             return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
         }
+
+        int sum = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
+
+        for (int i = 0; i < dMonth - 2; i++) {
+
+            LocalDate temp = start.plusMonths(i + 1);
+            sum += getBudgetByMonth(temp, 0, 0);
+        }
+
+        sum += getBudgetByMonth(end, 1, end.getDayOfMonth());
+
+        return sum;
+    }
+
+    private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
+        int avr = budget.amount / monthDays;
+        return (end - start + 1) * avr;
     }
 
     private int getBudgetByMonth(LocalDate date, int start, int end) {
@@ -76,10 +73,5 @@ public class BudgetModel {
 
     private List<Budget> getBudgets() {
         return repository.findAll();
-    }
-
-    private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
-        int avr = budget.amount / monthDays;
-        return (end - start + 1) * avr;
     }
 }
