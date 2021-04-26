@@ -45,14 +45,8 @@ public class BudgetModel {
     }
 
     private int getBudgetByMonth(LocalDate date, int start, int end) {
-        for (int i = 0; i < getBudgets().size(); i++) {
-            if (date.getYear() == getBudgets().get(i).year && date.getMonthValue() == getBudgets().get(i).month) {
-                Budget budget = getBudgets().get(i);
-
-                if (end < start || start < 1 || end > date.lengthOfMonth()) {
-                    return 0;
-                }
-
+        for (Budget budget : getBudgets()) {
+            if (date.getYear() == budget.year && date.getMonthValue() == budget.month) {
                 return getBudgetByDay(budget, date.lengthOfMonth(), start, end);
             }
         }
