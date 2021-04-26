@@ -17,7 +17,6 @@ public class BudgetModel {
     }
 
     public int queryBudget(LocalDate start, LocalDate end) {
-
         if (start.isAfter(end)) {
             return 0;
         }
@@ -43,7 +42,7 @@ public class BudgetModel {
     private int getBudgetByMonth(LocalDate startDate, LocalDate endDate) {
         for (Budget budget : getBudgets()) {
             if (YearMonth.from(startDate).equals(budget.getYearMonth())) {
-                return (Period.between(startDate, endDate).getDays() + 1) * (budget.amount / budget.getYearMonth().lengthOfMonth());
+                return (Period.between(startDate, endDate).getDays() + 1) * budget.getDailyAmount();
             }
         }
 

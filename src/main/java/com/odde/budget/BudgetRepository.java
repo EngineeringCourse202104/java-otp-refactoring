@@ -12,6 +12,10 @@ class Budget {
     public YearMonth getYearMonth() {
         return YearMonth.of(year, month);
     }
+
+    public int getDailyAmount() {
+        return amount / getYearMonth().lengthOfMonth();
+    }
 }
 
 public class BudgetRepository {
