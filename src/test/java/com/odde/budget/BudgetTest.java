@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class MockRepository extends BudgetRepository {
@@ -41,7 +41,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31));
 
-        assertTrue(result == 31);
+        assertEquals(31, result);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 31));
 
-        assertTrue(result == 0);
+        assertEquals(0, result);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 2, 28));
 
-        assertTrue(result == 59);
+        assertEquals(59, result);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 2, 15));
 
-        assertTrue(result == 32);
+        assertEquals(32, result);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 3, 15));
 
-        assertTrue(result == 60);
+        assertEquals(60, result);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 3, 15), LocalDate.of(2021, 1, 15));
 
-        assertTrue(result == 0);
+        assertEquals(0, result);
     }
 
 
@@ -198,7 +198,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 3, 15), LocalDate.of(2021, 3, 15));
 
-        assertTrue(result == 1);
+        assertEquals(1, result);
     }
 
 
@@ -223,7 +223,7 @@ public class BudgetTest {
 
         int result = budgetModel.queryBudget(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 2, 15));
 
-        assertTrue(result == 167);
+        assertEquals(167, result);
     }
 
 }
