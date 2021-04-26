@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-import static java.time.Period.between;
 import static java.time.temporal.ChronoUnit.MONTHS;
 
 public class BudgetModel {
@@ -27,7 +26,7 @@ public class BudgetModel {
     private int getBudgetByMonth(Period period) {
         for (Budget budget : getBudgets()) {
             if (YearMonth.from(period.getStart()).equals(budget.getYearMonth())) {
-                return (between(period.getStart(), period.getEnd()).getDays() + 1) * budget.getDailyAmount();
+                return period.getDayCount() * budget.getDailyAmount();
             }
         }
 

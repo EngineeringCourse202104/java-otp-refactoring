@@ -18,4 +18,8 @@ public class Period {
     public LocalDate getEnd() {
         return end;
     }
+
+    public int getDayCount() {
+        return java.time.Period.between(start, end).getDays() + 1;
+    }
 }
