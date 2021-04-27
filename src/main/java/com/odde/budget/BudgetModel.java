@@ -39,13 +39,12 @@ public class BudgetModel {
     }
 
     private int getAmountOfPeriod(LocalDate startDate, LocalDate endDate, Budget budget) {
-        int avr = budget.amount / budget.getYearMonth().lengthOfMonth();
-        return (endDate.getDayOfMonth() - startDate.getDayOfMonth() + 1) * avr;
+        return (endDate.getDayOfMonth() - startDate.getDayOfMonth() + 1) * budget.getDailyAmount();
     }
 
     private int getBudgetByMonth(LocalDate startDate, LocalDate endDate) {
         for (Budget budget : getBudgets()) {
-            if (yearMonth(startDate).equals(budget.getYearMonth())) {
+            if (budget.isSameMonth(startDate)) {
                 return getAmountOfPeriod(startDate, endDate, budget);
             }
         }
