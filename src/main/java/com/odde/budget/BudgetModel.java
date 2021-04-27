@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-import static java.time.temporal.ChronoUnit.MONTHS;
-
 public class BudgetModel {
 
     BudgetRepository repository;
@@ -23,34 +21,25 @@ public class BudgetModel {
         return queryBudgetInPeriod(new Period(start, end));
     }
 
-    private int getBudgetByMonth(Period period) {
-        for (Budget budget : getBudgets()) {
-            if (YearMonth.from(period.getStart()).equals(budget.getYearMonth())) {
-                return period.getDayCount() * budget.getDailyAmount();
-            }
-        }
-
-        return 0;
-    }
-
     private List<Budget> getBudgets() {
         return repository.findAll();
     }
 
-    private Period getOverlappingPeriod(Period period, YearMonth yearMonth) {
+    private int getOverlappingDayCount(Period period, Budget budget) {
+        YearMonth yearMonth = budget.getYearMonth();
         LocalDate overlappingStart = period.getStart().isAfter(yearMonth.atDay(1)) ? period.getStart() : yearMonth.atDay(1);
         LocalDate overlappingEnd = period.getEnd().isBefore(yearMonth.atEndOfMonth()) ? period.getEnd() : yearMonth.atEndOfMonth();
-        return new Period(overlappingStart, overlappingEnd);
+        if (overlappingStart.isAfter(overlappingEnd)) {
+            return 0;
+        }
+        return new Period(overlappingStart, overlappingEnd).getDayCount();
     }
 
     private int queryBudgetInPeriod(Period period) {
-        long dMonth = MONTHS.between(YearMonth.from(period.getStart()), YearMonth.from(period.getEnd()));
-
         int sum = 0;
 
-        for (int i = 0; i < dMonth + 1; i++) {
-            YearMonth yearMonth = YearMonth.from(period.getStart().plusMonths(i));
-            sum += getBudgetByMonth(getOverlappingPeriod(period, yearMonth));
+        for (Budget budget : getBudgets()) {
+            sum += getOverlappingDayCount(period, budget) * budget.getDailyAmount();
         }
 
         return sum;
