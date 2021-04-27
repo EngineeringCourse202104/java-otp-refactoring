@@ -25,7 +25,7 @@ public class BudgetModel {
         if (dMonth <= 1) {
             return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
         }
-       
+
         int sum = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
 
         for (int i = 0; i < dMonth - 2; i++) {
@@ -44,16 +44,9 @@ public class BudgetModel {
     }
 
     private int getBudgetByMonth(LocalDate date, int start, int end) {
-
-
-        Budget budget;
-
-
         for (int i = 0; i < getBudgets().size(); i++) {
-
-            if (date.getYear() == getBudgets().get(i).year && date.getMonthValue() == getBudgets().get(i).month) {
-                budget = getBudgets().get(i);
-
+            Budget budget = getBudgets().get(i);
+            if (date.getYear() == budget.year && date.getMonthValue() == budget.month) {
                 if (start == 0 || end == 0) {
                     return budget.amount;
                 } else {
