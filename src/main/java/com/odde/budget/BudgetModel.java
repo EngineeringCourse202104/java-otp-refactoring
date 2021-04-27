@@ -30,7 +30,7 @@ public class BudgetModel {
 
         for (int i = 0; i < dMonth - 2; i++) {
             LocalDate temp = start.plusMonths(i + 1);
-            sum += getBudgetByMonth(temp, 0, 0);
+            sum += getBudgetByMonth(temp, 1, temp.lengthOfMonth());
         }
 
         sum += getBudgetByMonth(end, 1, end.getDayOfMonth());
@@ -47,15 +47,7 @@ public class BudgetModel {
         for (int i = 0; i < getBudgets().size(); i++) {
             Budget budget = getBudgets().get(i);
             if (date.getYear() == budget.year && date.getMonthValue() == budget.month) {
-                if (start == 0 || end == 0) {
-                    return budget.amount;
-                } else {
-                    if (end < start || start < 1 || end > date.lengthOfMonth()) {
-                        return 0;
-                    }
-
-                    return getBudgetByDay(budget, date.lengthOfMonth(), start, end);
-                }
+                return getBudgetByDay(budget, date.lengthOfMonth(), start, end);
             }
         }
 
