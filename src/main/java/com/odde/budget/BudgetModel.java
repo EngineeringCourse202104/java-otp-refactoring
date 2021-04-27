@@ -54,9 +54,11 @@ public class BudgetModel {
     private int queryBudgetInPeriod(Period period) {
         int sum = 0;
 
-        for (int i = 0; i < allMonthCount(period); i++) {
-            LocalDate temp = period.getStart().plusMonths(i);
-            sum += getBudgetByMonth(getOverlappingPeriod(period, yearMonth(temp)));
+        for (Budget budget : getBudgets()) {
+            Period overlappingPeriod = getOverlappingPeriod(period, budget.getYearMonth());
+            if (budget.isSameMonth(overlappingPeriod.getStart())) {
+                sum += getAmountInPeriod(overlappingPeriod, budget);
+            }
         }
 
         return sum;
