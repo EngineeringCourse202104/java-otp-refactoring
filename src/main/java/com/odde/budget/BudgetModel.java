@@ -23,6 +23,10 @@ public class BudgetModel {
         return queryBudgetInPeriod(new Period(start, end));
     }
 
+    private int allMonthCount(Period period) {
+        return (int) (MONTHS.between(yearMonth(period.getStart()), yearMonth(period.getEnd())) + 1);
+    }
+
     private int getAmountInPeriod(Period period, Budget budget) {
         return period.getDayCount() * budget.getDailyAmount();
     }
@@ -48,22 +52,12 @@ public class BudgetModel {
     }
 
     private int queryBudgetInPeriod(Period period) {
-        int dMonth = (int) (MONTHS.between(yearMonth(period.getStart()), yearMonth(period.getEnd())) + 1);
+        int sum = 0;
 
-        YearMonth firstMonth = yearMonth(period.getStart());
-        if (dMonth <= 1) {
-            return getBudgetByMonth(getOverlappingPeriod(period, firstMonth));
-        }
-
-        int sum = getBudgetByMonth(getOverlappingPeriod(period, firstMonth));
-
-        for (int i = 0; i < dMonth - 2; i++) {
-            LocalDate temp = period.getStart().plusMonths(i + 1);
+        for (int i = 0; i < allMonthCount(period); i++) {
+            LocalDate temp = period.getStart().plusMonths(i);
             sum += getBudgetByMonth(getOverlappingPeriod(period, yearMonth(temp)));
         }
-
-        YearMonth lastMonth = yearMonth(period.getEnd());
-        sum += getBudgetByMonth(getOverlappingPeriod(period, lastMonth));
 
         return sum;
     }
