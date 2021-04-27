@@ -1,6 +1,5 @@
 package com.odde.budget;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,12 @@ class Budget {
         return amount / getYearMonth().lengthOfMonth();
     }
 
-    public boolean isSameMonth(LocalDate startDate) {
-        return YearMonth.from(startDate).equals(getYearMonth());
+    public Period getPeriod() {
+        return new Period(getYearMonth().atDay(1), getYearMonth().atEndOfMonth());
+    }
+
+    public int getOverlappingAmount(Period period) {
+        return getDailyAmount() * period.getOverlappingPeriod(getPeriod()).getDayCount();
     }
 }
 
