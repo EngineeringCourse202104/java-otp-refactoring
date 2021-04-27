@@ -41,21 +41,29 @@ public class BudgetModel {
         return repository.findAll();
     }
 
+    private Period getOverlappingPeriod(Period period, YearMonth month) {
+        LocalDate overlappingStart = period.getStart().isAfter(month.atDay(1)) ? period.getStart() : month.atDay(1);
+        LocalDate overlappingEnd = period.getEnd().isBefore(month.atEndOfMonth()) ? period.getEnd() : month.atEndOfMonth();
+        return new Period(overlappingStart, overlappingEnd);
+    }
+
     private int queryBudgetInPeriod(Period period) {
         int dMonth = (int) (MONTHS.between(yearMonth(period.getStart()), yearMonth(period.getEnd())) + 1);
 
+        YearMonth firstMonth = yearMonth(period.getStart());
         if (dMonth <= 1) {
-            return getBudgetByMonth(new Period(period.getStart(), period.getEnd()));
+            return getBudgetByMonth(getOverlappingPeriod(period, firstMonth));
         }
 
-        int sum = getBudgetByMonth(new Period(period.getStart(), yearMonth(period.getStart()).atEndOfMonth()));
+        int sum = getBudgetByMonth(getOverlappingPeriod(period, firstMonth));
 
         for (int i = 0; i < dMonth - 2; i++) {
             LocalDate temp = period.getStart().plusMonths(i + 1);
-            sum += getBudgetByMonth(new Period(yearMonth(temp).atDay(1), yearMonth(temp).atEndOfMonth()));
+            sum += getBudgetByMonth(getOverlappingPeriod(period, yearMonth(temp)));
         }
 
-        sum += getBudgetByMonth(new Period(yearMonth(period.getEnd()).atDay(1), period.getEnd()));
+        YearMonth lastMonth = yearMonth(period.getEnd());
+        sum += getBudgetByMonth(getOverlappingPeriod(period, lastMonth));
 
         return sum;
     }
