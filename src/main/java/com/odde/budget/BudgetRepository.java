@@ -1,8 +1,6 @@
 package com.odde.budget;
 
-import com.odde.securetoken.ProfileDao;
-import com.odde.securetoken.RsaTokenDao;
-
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,10 @@ class Budget {
     int year;
     int month;
     int amount;
+
+    public YearMonth getYearMonth() {
+        return YearMonth.of(year, month);
+    }
 }
 
 public class BudgetRepository {

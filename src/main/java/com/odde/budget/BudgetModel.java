@@ -20,7 +20,7 @@ public class BudgetModel {
             return 0;
         }
 
-        int dMonth = (int) (MONTHS.between(YearMonth.from(start), YearMonth.from(end)) + 1);
+        int dMonth = (int) (MONTHS.between(yearMonth(start), yearMonth(end)) + 1);
 
         if (dMonth <= 1) {
             return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
@@ -44,9 +44,8 @@ public class BudgetModel {
     }
 
     private int getBudgetByMonth(LocalDate date, int start, int end) {
-        for (int i = 0; i < getBudgets().size(); i++) {
-            Budget budget = getBudgets().get(i);
-            if (date.getYear() == budget.year && date.getMonthValue() == budget.month) {
+        for (Budget budget : getBudgets()) {
+            if (yearMonth(date).equals(budget.getYearMonth())) {
                 return getBudgetByDay(budget, date.lengthOfMonth(), start, end);
             }
         }
@@ -56,5 +55,9 @@ public class BudgetModel {
 
     private List<Budget> getBudgets() {
         return repository.findAll();
+    }
+
+    private YearMonth yearMonth(LocalDate start) {
+        return YearMonth.from(start);
     }
 }
