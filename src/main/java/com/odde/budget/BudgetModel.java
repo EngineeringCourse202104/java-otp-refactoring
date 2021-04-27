@@ -23,30 +23,30 @@ public class BudgetModel {
         int dMonth = (int) (MONTHS.between(yearMonth(start), yearMonth(end)) + 1);
 
         if (dMonth <= 1) {
-            return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
+            return getBudgetByMonth(start, start, end);
         }
 
-        int sum = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
+        int sum = getBudgetByMonth(start, start, yearMonth(start).atEndOfMonth());
 
         for (int i = 0; i < dMonth - 2; i++) {
             LocalDate temp = start.plusMonths(i + 1);
-            sum += getBudgetByMonth(temp, 1, temp.lengthOfMonth());
+            sum += getBudgetByMonth(temp, yearMonth(temp).atDay(1), yearMonth(temp).atEndOfMonth());
         }
 
-        sum += getBudgetByMonth(end, 1, end.getDayOfMonth());
+        sum += getBudgetByMonth(end, yearMonth(end).atDay(1), end);
 
         return sum;
     }
 
-    private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
-        int avr = budget.amount / monthDays;
-        return (end - start + 1) * avr;
+    private int getAmountOfPeriod(LocalDate date, LocalDate startDate, LocalDate endDate, Budget budget) {
+        int avr = budget.amount / date.lengthOfMonth();
+        return (endDate.getDayOfMonth() - startDate.getDayOfMonth() + 1) * avr;
     }
 
-    private int getBudgetByMonth(LocalDate date, int start, int end) {
+    private int getBudgetByMonth(LocalDate date, LocalDate startDate, LocalDate endDate) {
         for (Budget budget : getBudgets()) {
             if (yearMonth(date).equals(budget.getYearMonth())) {
-                return getBudgetByDay(budget, date.lengthOfMonth(), start, end);
+                return getAmountOfPeriod(date, startDate, endDate, budget);
             }
         }
 
