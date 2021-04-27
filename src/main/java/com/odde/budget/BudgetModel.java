@@ -20,22 +20,7 @@ public class BudgetModel {
             return 0;
         }
 
-        int dMonth = (int) (MONTHS.between(yearMonth(start), yearMonth(end)) + 1);
-
-        if (dMonth <= 1) {
-            return getBudgetByMonth(start, end);
-        }
-
-        int sum = getBudgetByMonth(start, yearMonth(start).atEndOfMonth());
-
-        for (int i = 0; i < dMonth - 2; i++) {
-            LocalDate temp = start.plusMonths(i + 1);
-            sum += getBudgetByMonth(yearMonth(temp).atDay(1), yearMonth(temp).atEndOfMonth());
-        }
-
-        sum += getBudgetByMonth(yearMonth(end).atDay(1), end);
-
-        return sum;
+        return queryBudgetInPeriod(new Period(start, end));
     }
 
     private int getAmountOfPeriod(LocalDate startDate, LocalDate endDate, Budget budget) {
@@ -54,6 +39,25 @@ public class BudgetModel {
 
     private List<Budget> getBudgets() {
         return repository.findAll();
+    }
+
+    private int queryBudgetInPeriod(Period period) {
+        int dMonth = (int) (MONTHS.between(yearMonth(period.getStart()), yearMonth(period.getEnd())) + 1);
+
+        if (dMonth <= 1) {
+            return getBudgetByMonth(period.getStart(), period.getEnd());
+        }
+
+        int sum = getBudgetByMonth(period.getStart(), yearMonth(period.getStart()).atEndOfMonth());
+
+        for (int i = 0; i < dMonth - 2; i++) {
+            LocalDate temp = period.getStart().plusMonths(i + 1);
+            sum += getBudgetByMonth(yearMonth(temp).atDay(1), yearMonth(temp).atEndOfMonth());
+        }
+
+        sum += getBudgetByMonth(yearMonth(period.getEnd()).atDay(1), period.getEnd());
+
+        return sum;
     }
 
     private YearMonth yearMonth(LocalDate start) {
