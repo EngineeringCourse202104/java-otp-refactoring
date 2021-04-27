@@ -2,7 +2,10 @@ package com.odde.budget;
 
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MONTHS;
 
 public class BudgetModel {
 
@@ -13,19 +16,11 @@ public class BudgetModel {
     }
 
     public int queryBudget(LocalDate start, LocalDate end) {
-
         if (start.isAfter(end)) {
             return 0;
         }
 
-        int startYear = start.getYear();
-
-        int startMonth = start.getMonthValue();
-
-        int endYear = end.getYear();
-        int endMonth = end.getMonthValue();
-
-        int dMonth = (endYear * 12 + endMonth) - (startYear * 12 + startMonth) + 1;
+        int dMonth = (int) (MONTHS.between(YearMonth.from(start), YearMonth.from(end)) + 1);
 
         if (dMonth > 1) {
 
@@ -46,6 +41,11 @@ public class BudgetModel {
         } else {
             return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
         }
+    }
+
+    private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
+        int avr = budget.amount / monthDays;
+        return (end - start + 1) * avr;
     }
 
     private int getBudgetByMonth(LocalDate date, int start, int end) {
@@ -76,10 +76,5 @@ public class BudgetModel {
 
     private List<Budget> getBudgets() {
         return repository.findAll();
-    }
-
-    private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
-        int avr = budget.amount / monthDays;
-        return (end - start + 1) * avr;
     }
 }
