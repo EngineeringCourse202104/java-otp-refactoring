@@ -22,21 +22,20 @@ public class BudgetModel {
 
         int dMonth = (int) (MONTHS.between(YearMonth.from(start), YearMonth.from(end)) + 1);
 
-        if (dMonth > 1) {
-            int sum = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
-
-            for (int i = 0; i < dMonth - 2; i++) {
-                LocalDate temp = start.plusMonths(i + 1);
-                sum += getBudgetByMonth(temp, 0, 0);
-            }
-
-            sum += getBudgetByMonth(end, 1, end.getDayOfMonth());
-
-            return sum;
-
-        } else {
+        if (dMonth <= 1) {
             return getBudgetByMonth(start, start.getDayOfMonth(), end.getDayOfMonth());
         }
+       
+        int sum = getBudgetByMonth(start, start.getDayOfMonth(), start.lengthOfMonth());
+
+        for (int i = 0; i < dMonth - 2; i++) {
+            LocalDate temp = start.plusMonths(i + 1);
+            sum += getBudgetByMonth(temp, 0, 0);
+        }
+
+        sum += getBudgetByMonth(end, 1, end.getDayOfMonth());
+
+        return sum;
     }
 
     private int getBudgetByDay(Budget budget, int monthDays, int start, int end) {
