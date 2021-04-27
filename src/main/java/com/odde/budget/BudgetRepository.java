@@ -9,21 +9,22 @@ class Budget {
     int month;
     int amount;
 
-    public YearMonth getYearMonth() {
-        return YearMonth.of(year, month);
+    public int getOverlappingAmount(Period period) {
+        return getDailyAmount() * period.getOverlappingDayCount(getPeriod());
     }
 
-    public int getDailyAmount() {
+    private int getDailyAmount() {
         return amount / getYearMonth().lengthOfMonth();
     }
 
-    public Period getPeriod() {
+    private Period getPeriod() {
         return new Period(getYearMonth().atDay(1), getYearMonth().atEndOfMonth());
     }
 
-    public int getOverlappingAmount(Period period) {
-        return getDailyAmount() * period.getOverlappingPeriod(getPeriod()).getDayCount();
+    private YearMonth getYearMonth() {
+        return YearMonth.of(year, month);
     }
+
 }
 
 public class BudgetRepository {

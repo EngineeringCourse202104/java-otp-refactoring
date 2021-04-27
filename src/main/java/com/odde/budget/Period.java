@@ -11,29 +11,17 @@ public class Period {
         this.end = end;
     }
 
-    public LocalDate getStart() {
-        return start;
+    public int getOverlappingDayCount(Period anotherPeriod) {
+        LocalDate overlappingStart = start.isAfter(anotherPeriod.start) ? start : anotherPeriod.start;
+        LocalDate overlappingEnd = end.isBefore(anotherPeriod.end) ? end : anotherPeriod.end;
+        if (overlappingStart.isAfter(overlappingEnd)) {
+            return 0;
+        }
+        return new Period(overlappingStart, overlappingEnd).getDayCount();
     }
 
-    public LocalDate getEnd() {
-        return end;
-    }
-
-    public int getDayCount() {
+    private int getDayCount() {
         return java.time.Period.between(start, end).getDays() + 1;
     }
 
-    public Period getOverlappingPeriod(Period anotherPeriod) {
-        LocalDate overlappingStart = getStart().isAfter(anotherPeriod.getStart()) ? getStart() : anotherPeriod.getStart();
-        LocalDate overlappingEnd = getEnd().isBefore(anotherPeriod.getEnd()) ? getEnd() : anotherPeriod.getEnd();
-        if (overlappingStart.isAfter(overlappingEnd)) {
-            return new Period(overlappingStart, overlappingEnd) {
-                @Override
-                public int getDayCount() {
-                    return 0;
-                }
-            };
-        }
-        return new Period(overlappingStart, overlappingEnd);
-    }
 }
