@@ -39,7 +39,7 @@ public class BudgetModel {
     }
 
     private int getAmountOfPeriod(LocalDate startDate, LocalDate endDate, Budget budget) {
-        int avr = budget.amount / startDate.lengthOfMonth();
+        int avr = budget.amount / budget.getYearMonth().lengthOfMonth();
         return (endDate.getDayOfMonth() - startDate.getDayOfMonth() + 1) * avr;
     }
 
